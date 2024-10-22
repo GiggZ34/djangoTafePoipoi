@@ -22,22 +22,26 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     # Log
     path("silk/", include("silk.urls", namespace="silk")),
     # Swagger
-    path("schema/", SpectacularAPIView.as_view(), name="schema"),
+    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     # Optional UI:
     path(
-        "schema/swagger-ui/",
+        "api/schema/swagger-ui/",
         SpectacularSwaggerView.as_view(url_name="schema"),
         name="swagger-ui",
     ),
     path(
-        "schema/redoc/",
+        "api/schema/redoc/",
         SpectacularRedocView.as_view(url_name="schema"),
         name="redoc",
     ),
+    path("api", include("app.urls")),
 ]
+
+urlpatterns += staticfiles_urlpatterns()
