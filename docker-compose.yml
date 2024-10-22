@@ -1,0 +1,35 @@
+version: '3'
+services:
+  db:
+    image: postgres
+    container_name: ${PROJECT_NAME}-db
+    env_file: .env
+    ports:
+      - ${EXTERNAL_POSTGRES_PORT}:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    networks:
+      - tafe-poipoi-network
+    restart: unless-stopped
+
+  backend:
+    build:
+      dockerfile: local.django.dockerfile
+      context: .
+    container_name: ${PROJECT_NAME}-backend
+    volumes:
+      - .:/app
+    ports:
+      - ${PORT}:8000
+    env_file: .env
+    depends_on:
+      - db
+    restart: unless-stopped
+    networks:
+      - tafe-poipoi-network
+
+volumes:
+  postgres_data:
+networks:
+  tafe-poipoi-network:
+    external: true
